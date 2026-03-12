@@ -3,3 +3,27 @@ title: "ENVS-193DS_Winter-2026_final"
 output: html_document
 ---
 
+## Problem 1. Research writing
+
+### a. Transparent statistical methods
+
+In part 1, they used a linear regression. In part 2, they used an ANOVA test. 
+
+### b. Figure needed
+
+One figure that could accompany the statement in part 2 is a side-by-side boxplot of wetland area across different water year classifications. We would include water year type on the x-axis and wetland area (in m^2^) on the y-axis. For each year type, we would include a vertically-oriented boxplot with the box representing the 1st quartile, median, and 3rd quartile, and the tails representing 1.5 $\times$ IQR. We would also include underlying data points (observations of wetland area) behind the boxes as a jitter plot. This way, it is possible to visually determine the central tendency and relative variance of each treatment group (year type), which should support the fact that not one treatment group median is significantly different from the others.
+
+### c. Suggestions for rewriting
+
+We have determined that flooded wetland area in the San Joaquin River Delta is not predicted by precipitation (linear regression, F(df) = test statistic, p = 0.11, $\alpha$ = 0.05). We have also found that median flooded wetland area does not differ across water year classification (wet, above normal, below normal, dry, critical drought) (ANOVA, F(df) = test statistic, p = 0.12, $\alpha$ = 0.05).
+
+### d. Interpretation
+
+One additional variable that could influence the flooded area of a wetland is the location of the land parcel, particularly if land parcels are private or public land. This variable is a binary categorical variable (private/not private or public/not public). This variable might influence wetland flooding because management strategies (involving water diversion restriction meant to retain flooded wetlands) are suggested to differ between public and private land parcels, making it plausible that there could be a difference in wetland area between lands that choose to divert water and those that choose to retain water. 
+
+
+## Problem 2. Data visualization
+
+## Problem 3. Data analysis
+
+## Problem 4. Affective and exploratory visulizations
