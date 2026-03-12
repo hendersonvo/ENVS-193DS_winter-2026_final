@@ -4,6 +4,29 @@ author: Henderson Vo
 date: 2026-03-17
 output: html_document
 ---
+[GitHub repo](https://github.com/hendersonvo/ENVS-193DS_winter-2026_final)
+
+# Set up
+
+```{r message=FALSE, warning=FALSE}
+# loading libraries
+library(tidyverse)
+library(janitor)
+library(here)
+library(sysfonts)
+library(showtext)
+
+# loading data
+kelp <- read_csv(here("data", "Annual_Kelp_All_Years_20250903.csv"))
+mp_selection <- read_csv(here("data", "MOPL_nest-site_selection_Duchardt_et_al._2019.csv"))
+
+# cleaning data
+
+mp_clean <- mp_selection |> 
+  clean_names() 
+```
+
+
 
 ## Problem 1. Research writing
 
@@ -28,11 +51,65 @@ One additional variable that could influence the flooded area of a wetland is th
 
 ### a. Cleaning and summarizing
 
+```{r}
+kelp_clean <- kelp |> # use kelp data
+  clean_names() |> # change column names to lowercase
+  
+  filter(!(date == "2000-09-22" & transect == "6" & quad == "40")) |> # filter out observations with this date, transect number, and quad number
+  
+  filter(site %in% c("IVEE", "NAPL", "CARP")) |> # only keep observations with IVEE, NAPL, or CARP as their site
+  
+  mutate(site_name = case_when(site == "NAPL" ~ "Naples", # create a new column site_name with full names of site codes
+                               site == "IVEE" ~ "Isla Vista",
+                               site == "CARP" ~ "Carpinteria")) |> 
+  
+  mutate(site_name = as_factor(site_name), # set site_name to factor instead of string
+       site_name = fct_relevel(site_name, # set levels to site_name factors
+                               "Naples", "Isla Vista", "Carpinteria")) |> 
+  
+  group_by(site_name, year) |> # group by site_name and year
+  
+  summarize(mean_fronds = mean(fronds)) |> # give use the mean frond count
+  
+  ungroup() # stop grouping by site_name and year
+
+slice_sample(kelp_clean, n = 5)
+str(kelp_clean)
+
+```
+
+
 ### b. Understanding the data
+
+Because we are looking at frond observations, we want to exclude observations from 2000-09-22 in transect 6 in quad 40 because they are marked to have -99999 fronds. This does not biologically make sense, but it is instead intended to represent that there is missing data (NA), as indicated by the notes section saying that the datasheet was lost; this reasoning is also outlined in the Methods and Protocols section for this dataset.  
 
 ### c. Visualize the data
 
-### Interpretation
+```{r}
+font_add_google("Lato", "lato")
+showtext_auto()
+
+ggplot(data = kelp_clean,
+       aes(x = year,
+           y = mean_fronds,
+           color = site_name)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Year",
+       y = "Mean kelp frounds per year",
+       title = "Sites vary in mean kelp fronds per year",
+       color = "Site") +
+  scale_color_manual(values = c("Naples" = "turquoise4",
+                                "Isla Vista" = "tan",
+                                "Carpinteria" = "darkgrey")) +
+  theme_minimal(base_family = "lato") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+### d. Interpretation
+
+We can see that the site with the most variable mean kelp fronds per year is Isla Vista, which we can visually determine based on how the tan points alternate between being high (higher than the other two sites) and low (about as low as the other sites) on the y-axis. The site with the least variable mean kelp fronds per year is Carpinteria, which we can similarly visually determine based on how the points do not seem to fluctuate in position on the y-axis as much as the other two plots, with the higher points being about as high or lower than Naples (the second-least variable site) and the lower points being about as low or a little higher than the other two sites; inferring that this site has a smaller range of mean kelp frond measurements, which could also infer less variation.  
 
 ## Problem 3. Data analysis
 
