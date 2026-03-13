@@ -127,11 +127,11 @@ The 1s and 0s represent whether or not a site was used by a Mountain Plover. The
 
 ##### *Visual obstruction*
 
-This predictor variable is continuous, as it comprises measurements of vegetation height and density (Methods, Adult Mountain Plover Density, Data collection, paragraph 3), both of which can take on any value in a range, including fractional units. As visual obstruction increases, the probability of Mountain Plover nest site use would decrease because Mountain Plovers have been found to prefer bare-ground habitats (Methods, Mountain Plover Density, Modeling framework, paragraph 1, Knopf and Miller 1994).
+This predictor variable is continuous, as it comprises measurements of vegetation height and density (Methods, Adult Mountain Plover Density, Data collection, paragraph 3), both of which can take on any value in a range, including fractional units. As visual obstruction increases, the probability of Mountain Plover nest site occupancy would decrease because Mountain Plovers have been found to prefer bare-ground habitats (Methods, Mountain Plover Density, Modeling framework, paragraph 1, Knopf and Miller 1994).
 
 ##### *Distance to prairie dog colony edge*
 
-This predictor variable is continuous, as a distance can take on any value in a range, including fractional units. As distance to the pririe dog colony edge increases, the probability of Mountain Plover nest site use would increase because "Mountain Plovers are especially dependent on black-tailed prairie dogs (Cynomys ludovicianus) to engineer suitable habitat through soil disturbance and vegetation clipping (Dinsmore et al. 2005, Augustine and Derner 2012, Duchardt et al. 2018)," (Introduction, paragraph 3).
+This predictor variable is continuous, as a distance can take on any value in a range, including fractional units. As distance to the pririe dog colony edge increases, the probability of Mountain Plover nest site occupancy would increase because "Mountain Plovers are especially dependent on black-tailed prairie dogs (Cynomys ludovicianus) to engineer suitable habitat through soil disturbance and vegetation clipping (Dinsmore et al. 2005, Augustine and Derner 2012, Duchardt et al. 2018)," (Introduction, paragraph 3).
 
 ### c. Table of models
 
@@ -178,7 +178,7 @@ mopl_model3 <- glm(data = mopl_clean,
 model.sel(mopl_model0, mopl_model1, mopl_model2, mopl_model3, rank = AIC)
 ```
 
-The best model as determed by Akaike's Information Criterion (AIC) is the model using only visual obstruction as a predictor to site usage, as it has the lowest AIC compared to the other three models. 
+The best model as determed by Akaike's Information Criterion (AIC) is the model using only visual obstruction as a predictor to nest site usage, as it has the lowest AIC compared to the other three models. 
 
 ### f. Check the diagnostics
 
@@ -215,7 +215,7 @@ ggplot(mopl_clean,
   scale_y_continuous(limits = c(0,1),
                      breaks = c(0,1)) +
   labs(x = "Visual obstruction (cm)",
-       y = "Site usage (1 = Yes, 0 = No)") +
+       y = "Probability of nest site occupancy (1 = Yes, 0 = No)") +
   theme_bw() +
   theme(panel.grid = element_blank())
 ```
@@ -237,7 +237,7 @@ The predicted probability of Mountain Plover nest site occupancy at 0 on the ind
 
 ### j. Interpret your results
 
-
+The predicted probability of Mountain Plover nest site occupancy when there is no visual obstruction (0 on visual obstruction index) is 0.73, or 73%. From our selected model, we can see that there is a negative relationship between visual obstruction and probability of occupancy. That is, as visual obstruction increases, we would expect to observe a lower probability of nest site occupancy by Mountain Plovers. This is because "the short, dense layer [of vegetation] can provide some concealment to a sitting plover's body" (Discussion, paragraph 4) and having sparse taller vegetation can still slightly obstruct the outline of the plover while still allowing the plover to scan for predators (Discussion, paragraph 4). 
 
 ## Problem 4. Affective and exploratory visulizations
 
@@ -290,9 +290,6 @@ cliff.delta(
 )
 ```
 
-We can see that between weekdays and weekends, there is no difference in the number of steps taken (Wilcoxon rank sum test, W = 247, p = 0.9738, $\alpha$ = 0.05).
-
-Also, as expected, we see a negligible effect of weekday type on number of steps taken ($\delta$ = 0.008).
 
 ### d. Create a visualization
 
@@ -316,9 +313,11 @@ ggplot(data = personal,
 
 ### e. Write a caption
 
-**Figure 2. Step count does not differ between weekdays and weekends.** The x-axis describes whether the day is a weekday (yes weekday) or a weekend (no weekday). The y-axis describes the number of steps taken. Each point represents an observation from one day. The boxes represent the first quartile (bottom of the box), the median (center line), and the third quartile (top of the box). The tails of the boxes represent 1.5 $\times$ IQR. 
+**Figure 2. Step count does not differ between weekdays and weekends.** The x-axis describes whether the day is a weekday (yes weekday) or a weekend (no weekday). The y-axis describes the number of steps taken. Each point represents an observation from one day. The boxes represent the first quartile (bottom of the box), the median (center line), and the third quartile (top of the box). The tails of the boxes represent the range of data within 1.5 $\times$ IQR. 
 
 ### f. Write about your results
+
+We can see that between weekdays and weekends, there is no difference in the number of steps taken (Wilcoxon rank sum test, W = 247, p = 0.9738, $\alpha$ = 0.05). We also see a negligible effect of weekday type on number of steps taken ($\delta$ = 0.008).
 
 ### g. Sharing your affective visualization
 
