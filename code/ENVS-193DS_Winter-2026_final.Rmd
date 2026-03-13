@@ -19,6 +19,7 @@ library(MuMIn)
 library(DHARMa)
 library(ggeffects)
 library(effsize)
+library(gtsummary)
 
 # loading data
 kelp <- read_csv(here("data", "Annual_Kelp_All_Years_20250903.csv"))
@@ -120,17 +121,17 @@ We can see that the site with the most variable mean kelp fronds per year is Isl
 
 ### a. Response Variable
 
-The 1s and 0s represent whether or not a site was used by a Mountain Plover. The 1s indicate that a site was used, and the 0s indicate that a site was unused.
+The 1s and 0s represent whether or not a site was used by a Mountain Plover. The 1s indicate that a site was used, and the 0s indicate that a site was unused. 
 
 ### b. Purpose of study
 
 ##### *Visual obstruction*
 
-This variable is continuous.
+This predictor variable is continuous, as it comprises measurements of vegetation height and density (Methods, Adult Mountain Plover Density, Data collection, paragraph 3), both of which can take on any value in a range, including fractional units. As visual obstruction increases, the probability of Mountain Plover nest site use would decrease because Mountain Plovers have been found to prefer bare-ground habitats (Methods, Mountain Plover Density, Modeling framework, paragraph 1, Knopf and Miller 1994).
 
 ##### *Distance to prairie dog colony edge*
 
-This variable is continuous. 
+This predictor variable is continuous, as a distance can take on any value in a range, including fractional units. As distance to the pririe dog colony edge increases, the probability of Mountain Plover nest site use would increase because "Mountain Plovers are especially dependent on black-tailed prairie dogs (Cynomys ludovicianus) to engineer suitable habitat through soil disturbance and vegetation clipping (Dinsmore et al. 2005, Augustine and Derner 2012, Duchardt et al. 2018)," (Introduction, paragraph 3).
 
 ### c. Table of models
 
@@ -177,7 +178,7 @@ mopl_model3 <- glm(data = mopl_clean,
 model.sel(mopl_model0, mopl_model1, mopl_model2, mopl_model3, rank = AIC)
 ```
 
-We have determined that the model using only visual obstruction as a predictor to site usage was the best model, as it has the lowest AIC compared to the other three models. 
+The best model as determed by Akaike's Information Criterion (AIC) is the model using only visual obstruction as a predictor to site usage, as it has the lowest AIC compared to the other three models. 
 
 ### f. Check the diagnostics
 
@@ -187,10 +188,11 @@ plot(
 )
 ```
 
+We can see that our simulated residuals follow a uniform distribution, which we can visually determine by seeing how the triangle points (representing the residual of one observation) fall onto the red line (theoretical uniform distribution). We can also see uniformity in our DHARMa residuals across our rank-transformed model predictions.
 
 ### g. Visualize the model predictions
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 mopl_preds <- ggpredict(mopl_model3,
                         terms = "vo_nest [0:19 by = 1]")
 
@@ -198,18 +200,22 @@ ggplot(mopl_clean,
        aes(x = vo_nest,
            y = used_bin)) +
   geom_point(size = 3,
-             alpha = 0.4) +
+             color = "brown",
+             alpha = 0.25) +
   geom_ribbon(data = mopl_preds,
               aes(x = x,
                   y = predicted,
                   ymin = conf.low,
                   ymax = conf.high),
-              alpha = 0.4) +
+              alpha = 0.3,
+              fill = "forestgreen") +
   geom_line(data = mopl_preds,
             aes(x = x,
                 y = predicted)) +
   scale_y_continuous(limits = c(0,1),
                      breaks = c(0,1)) +
+  labs(x = "Visual obstruction (cm)",
+       y = "Site usage (1 = Yes, 0 = No)") +
   theme_bw() +
   theme(panel.grid = element_blank())
 ```
@@ -217,11 +223,17 @@ ggplot(mopl_clean,
 
 ### h. Write a caption for your figure
 
-
+**Figure 1. Mountain plovers tend to select sites with lower visual obstruction.** The x-axis represents the level of visual obstruction at a site in cm. The y-axis is a scale of probability from 0 to 1. The points represent individual observations of site selection. The black line represents the model prediction of site selection probability. The green ribbon represents a 95% confidence interval for the model predictions. 
 
 ### i. Calculate model predictions
 
+```{r}
+summary(mopl_model3) # show model coefficients
 
+plogis(1.00528) # perform inverse logit transformation on intercept estimate
+```
+
+The predicted probability of Mountain Plover nest site occupancy at 0 on the index of visual obstruction is 0.73, or 73%. 
 
 ### j. Interpret your results
 
@@ -304,7 +316,7 @@ ggplot(data = personal,
 
 ### e. Write a caption
 
-**Figure 1. Step count does not differ between weekdays and weekends.** The x-axis describes whether the day is a weekday (yes weekday) or a weekend (no weekday). The y-axis describes the number of steps taken. Each point represents an observation from one day. The boxes represent the first quartile (bottom of the box), the median (center line), and the third quartile (top of the box). The tails of the boxes represent 1.5 $\times$ IQR. 
+**Figure 2. Step count does not differ between weekdays and weekends.** The x-axis describes whether the day is a weekday (yes weekday) or a weekend (no weekday). The y-axis describes the number of steps taken. Each point represents an observation from one day. The boxes represent the first quartile (bottom of the box), the median (center line), and the third quartile (top of the box). The tails of the boxes represent 1.5 $\times$ IQR. 
 
 ### f. Write about your results
 
