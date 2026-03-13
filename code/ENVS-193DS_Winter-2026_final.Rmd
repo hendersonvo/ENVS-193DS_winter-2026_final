@@ -1,5 +1,5 @@
 ---
-title: "ENVS-193DS_Winter-2026_final"
+title: "ENVS 193DS Winter 2026 Final"
 author: Henderson Vo
 date: 2026-03-17
 output: html_document
@@ -26,6 +26,12 @@ mp_selection <- read_csv(here("data", "MOPL_nest-site_selection_Duchardt_et_al._
 personal <- read_csv(here("data", "envs193ds-personal-data.csv")) |> 
   clean_names() |> 
   mutate(weekday = fct_relevel(as_factor(weekday), "Yes", "No"))
+
+# load font
+font_add_google("Lato", "lato")
+showtext_auto()
+showtext_opts(dpi = 200)
+theme_set(theme_classic(base_family = "lato"))
 ```
 
 
@@ -88,9 +94,6 @@ Because we are looking at frond observations, we want to exclude observations fr
 ### c. Visualize the data
 
 ```{r}
-font_add_google("Lato", "lato")
-showtext_auto()
-
 ggplot(data = kelp_clean,
        aes(x = year,
            y = mean_fronds,
@@ -234,7 +237,7 @@ My two types of visualizations are similar in the way that they use color to dif
 
 ### b. Designing an analysis
 
-My response variable (step count) is a discrete variable, and my predictor variable (weekday/weekend) is a binary categorical variable. My initial question when collecting this data was: How does the number of steps I take vary between weekdays and weekends? Because we want to identify if there is a difference between two groups, and our response variable is not continuous, it would be appropriate to use a non parametric test that compares the ranks of the data points between the two groups. We have a test that does this: the Mann-Whitney U test! We would use this instead of the t-test (the parametric counterpart) because our count data does not follow a normal distribution, breaking one of the assumptions of the t-test. 
+My response variable (step count) is a discrete variable, and my predictor variable (weekday/weekend) is a binary categorical variable. My initial question when collecting this data was: How does the number of steps I take vary between weekdays and weekends? Because we want to identify if there is a difference between two groups, and our response variable is not continuous, it would be appropriate to use a non parametric test that compares the ranks of the data points between the two groups. We have a test that does this: the Wilcoxon rank sum test! We would use this instead of the t-test (the parametric counterpart) because our count data does not follow a normal distribution, breaking one of the assumptions of the t-test. 
 
 ### c. Check any assumptions and run your analysis
 
@@ -275,13 +278,14 @@ cliff.delta(
 )
 ```
 
-We can see that between weekdays and weekends, there does not seem to be a difference in the number of steps taken (Wilcoxon rank sum test, W = 247, p = 0.9738, $\alpha$ = 0.05).
+We can see that between weekdays and weekends, there is no difference in the number of steps taken (Wilcoxon rank sum test, W = 247, p = 0.9738, $\alpha$ = 0.05).
 
 Also, as expected, we see a negligible effect of weekday type on number of steps taken ($\delta$ = 0.008).
 
 ### d. Create a visualization
 
 ```{r}
+
 ggplot(data = personal,
        aes(x = weekday,
            y = steps_taken,
