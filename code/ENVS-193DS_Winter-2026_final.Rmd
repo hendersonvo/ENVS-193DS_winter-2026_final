@@ -15,15 +15,17 @@ library(janitor)
 library(here)
 library(sysfonts)
 library(showtext)
+library(MuMIn)
+library(DHARMa)
+library(ggeffects)
+library(effsize)
 
 # loading data
 kelp <- read_csv(here("data", "Annual_Kelp_All_Years_20250903.csv"))
 mp_selection <- read_csv(here("data", "MOPL_nest-site_selection_Duchardt_et_al._2019.csv"))
-
-# cleaning data
-
-mp_clean <- mp_selection |> 
-  clean_names() 
+personal <- read_csv(here("data", "envs193ds-personal-data.csv")) |> 
+  clean_names() |> 
+  mutate(weekday = fct_relevel(as_factor(weekday), "Yes", "No"))
 ```
 
 
@@ -32,7 +34,7 @@ mp_clean <- mp_selection |>
 
 ### a. Transparent statistical methods
 
-In part 1, they used a linear regression. In part 2, they used an ANOVA test. 
+In part 1, they used a linear regression. In part 2, they used a Kruskal-Wallis test. 
 
 ### b. Figure needed
 
@@ -40,7 +42,7 @@ One figure that could accompany the statement in part 2 is a side-by-side boxplo
 
 ### c. Suggestions for rewriting
 
-We have determined that flooded wetland area in the San Joaquin River Delta is not predicted by precipitation (linear regression, F(df) = test statistic, p = 0.11, $\alpha$ = 0.05). We have also found that median flooded wetland area does not differ across water year classification (wet, above normal, below normal, dry, critical drought) (ANOVA, F(df) = test statistic, p = 0.12, $\alpha$ = 0.05).
+We have determined that flooded wetland area in the San Joaquin River Delta is not predicted by precipitation (linear regression, F(df) = test statistic, p = 0.11, $\alpha$ = 0.05). We have also found that median flooded wetland area does not differ across water year classification (wet, above normal, below normal, dry, critical drought) (Kruskal-Wallis test, H = test statistic, p = 0.12, $\alpha$ = 0.05).
 
 ### d. Interpretation
 
@@ -115,36 +117,193 @@ We can see that the site with the most variable mean kelp fronds per year is Isl
 
 ### a. Response Variable
 
+The 1s and 0s represent whether or not a site was used by a Mountain Plover. The 1s indicate that a site was used, and the 0s indicate that a site was unused.
+
 ### b. Purpose of study
+
+##### *Visual obstruction*
+
+This variable is continuous.
+
+##### *Distance to prairie dog colony edge*
+
+This variable is continuous. 
 
 ### c. Table of models
 
+
+| Model # | Visual obstruction | Distance to prairie dog colony | Model description |
+|:-------:|:------------------:|:------------------------------:|:-----------------:|
+| 0       |       $\times$     |            $\times$            | Null model        |
+| 1       | $\checkmark$       | $\checkmark$                   | Saturated model   |
+| 2       |  $\times$          | $\checkmark$                   | Edge distance model |
+| 3       | $\checkmark$       | $\times$                       | Visual obstruction model |
+
 ### d. Run the models
+
+```{r}
+mopl_clean <- mp_selection |> 
+  clean_names() |> 
+  mutate(used_bin = case_when(id == "used" ~ 1,
+                              id == "available" ~ 0)) |> 
+  select(used_bin, edgedist, vo_nest)
+```
+
+```{r}
+mopl_model0 <- glm(data = mopl_clean,
+                   used_bin ~ 1,
+                   family = "binomial")
+
+mopl_model1 <- glm(data = mopl_clean, 
+                   used_bin ~ edgedist + vo_nest,
+                   family = "binomial")
+
+mopl_model2 <- glm(data = mopl_clean,
+                   used_bin ~ edgedist,
+                   family = "binomial")
+
+mopl_model3 <- glm(data = mopl_clean,
+                   used_bin ~ vo_nest,
+                   family = "binomial")
+```
+
 
 ### e. Select the best model
 
+```{r}
+model.sel(mopl_model0, mopl_model1, mopl_model2, mopl_model3, rank = AIC)
+```
+
+We have determined that the model using only visual obstruction as a predictor to site usage was the best model, as it has the lowest AIC compared to the other three models. 
+
 ### f. Check the diagnostics
+
+```{r}
+plot(
+  simulateResiduals(mopl_model3)
+)
+```
+
 
 ### g. Visualize the model predictions
 
+```{r}
+mopl_preds <- ggpredict(mopl_model3,
+                        terms = "vo_nest [0:19 by = 1]")
+
+ggplot(mopl_clean,
+       aes(x = vo_nest,
+           y = used_bin)) +
+  geom_point(size = 3,
+             alpha = 0.4) +
+  geom_ribbon(data = mopl_preds,
+              aes(x = x,
+                  y = predicted,
+                  ymin = conf.low,
+                  ymax = conf.high),
+              alpha = 0.4) +
+  geom_line(data = mopl_preds,
+            aes(x = x,
+                y = predicted)) +
+  scale_y_continuous(limits = c(0,1),
+                     breaks = c(0,1)) +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+```
+
+
 ### h. Write a caption for your figure
+
+
 
 ### i. Calculate model predictions
 
+
+
 ### j. Interpret your results
+
+
 
 ## Problem 4. Affective and exploratory visulizations
 
 ### a. Comparing visualizations
 
+My affective visualization differs from my exploratory visualizations that I made for Homework 2 by presenting more information in one figure than the exploratory visualizations. In the affective visualization, each data point (footprint) communicated information about the steps taken, caffeine consumption, on-call status, and weekday/weekend association, whereas my exploratory visualizations showed at most two predictor variables. Additionally, my affective visualization does not follow any axes (instead uses a calendar organization), whereas the exploratory visualizations require axes to be interpretable. 
+
+My two types of visualizations are similar in the way that they use color to differentiate between groups within a variable. For example, my affective visualization uses color to differentiate higher step counts from lower step counts in a single day, and my exploratory visualizations use color to differentiate between weekdays and weekends. 
+
 ### b. Designing an analysis
+
+My response variable (step count) is a discrete variable, and my predictor variable (weekday/weekend) is a binary categorical variable. My initial question when collecting this data was: How does the number of steps I take vary between weekdays and weekends? Because we want to identify if there is a difference between two groups, and our response variable is not continuous, it would be appropriate to use a non parametric test that compares the ranks of the data points between the two groups. We have a test that does this: the Mann-Whitney U test! We would use this instead of the t-test (the parametric counterpart) because our count data does not follow a normal distribution, breaking one of the assumptions of the t-test. 
 
 ### c. Check any assumptions and run your analysis
 
+#### Checking assumptions
+
+We will check the assumptions that (1) our response variable is either continuous or ordinal, (2) our predictor variable has two categorical, independent groups, (3) our observations are independent, and (4) the two groups have the same shape distributions.
+
+We have already checked assumptions 1 and 2 in part 4b.
+
+We can also say that our observations are independent, since the number of steps I take in a day doesn't affect the steps I take in another day, so we meet assumption 3!
+
+Now we will check assumption 4. 
+
+```{r}
+ggplot(data = personal,
+       aes(x = steps_taken,
+           fill = weekday)) +
+  geom_histogram(bins = 7, color = "black") +
+  facet_wrap(~ weekday) +
+  theme_bw() 
+```
+
+Although there is a difference in height between the two peaks (which can be attributed to the fact that there are many more weekday observations than weekend observations), we can see that both distributions have a slight right skew. Overall, the shapes of both distributions look relatively the same.
+
+Now all of our assumptions are checked! Let's run the test.
+
+#### Running the test
+
+```{r}
+wilcox.test(
+  steps_taken ~ weekday, 
+  data = personal
+)
+
+cliff.delta(
+  steps_taken ~ weekday,
+  data = personal
+)
+```
+
+We can see that between weekdays and weekends, there does not seem to be a difference in the number of steps taken (Wilcoxon rank sum test, W = 247, p = 0.9738, $\alpha$ = 0.05).
+
+Also, as expected, we see a negligible effect of weekday type on number of steps taken ($\delta$ = 0.008).
+
 ### d. Create a visualization
 
+```{r}
+ggplot(data = personal,
+       aes(x = weekday,
+           y = steps_taken,
+           color = weekday)) +
+  geom_boxplot(width = 0.5) +
+  geom_jitter(height = 0,
+              width = 0.1,
+              alpha = 0.4) +  
+  scale_color_manual(values = c("Yes" = "gold3",
+                                "No" = "turquoise")) +
+  labs(x = "Weekday (Yes/No)",
+       y = "Number of steps taken") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
 ### e. Write a caption
+
+**Figure 1. Step count does not differ between weekdays and weekends.** The x-axis describes whether the day is a weekday (yes weekday) or a weekend (no weekday). The y-axis describes the number of steps taken. Each point represents an observation from one day. The boxes represent the first quartile (bottom of the box), the median (center line), and the third quartile (top of the box). The tails of the boxes represent 1.5 $\times$ IQR. 
 
 ### f. Write about your results
 
 ### g. Sharing your affective visualization
+
+(Done in person during Week 10 workshop.)
