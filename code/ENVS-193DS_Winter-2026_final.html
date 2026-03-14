@@ -266,11 +266,11 @@ window.Quarto = {
 <pre><code># A tibble: 5 × 3
   site_name    year mean_fronds
   &lt;fct&gt;       &lt;dbl&gt;       &lt;dbl&gt;
-1 Isla Vista   2012       12.8 
-2 Isla Vista   2019       12.1 
-3 Carpinteria  2014        7.26
-4 Isla Vista   2006       11.6 
-5 Carpinteria  2010        3.53</code></pre>
+1 Naples       2024       17.5 
+2 Carpinteria  2011        8.75
+3 Naples       2020        7.41
+4 Isla Vista   2010        4.78
+5 Naples       2013        9.20</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(kelp_clean) <span class="co"># view the structure of dataset</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -506,6 +506,8 @@ vo_nest | Predicted |     95% CI
 <h3 class="anchored" data-anchor-id="a.-comparing-visualizations">a. Comparing visualizations</h3>
 <p>My affective visualization differs from my exploratory visualizations that I made for Homework 2 by presenting more information in one figure than the exploratory visualizations. In the affective visualization, each data point (footprint) communicated information about the steps taken, caffeine consumption, on-call status, and weekday/weekend association, whereas my exploratory visualizations showed at most two predictor variables. Additionally, my affective visualization does not follow any axes (instead uses a calendar organization), whereas the exploratory visualizations require axes to be interpretable.</p>
 <p>My two types of visualizations are similar in the way that they use color to differentiate between groups within a variable. For example, my affective visualization uses color to differentiate higher step counts from lower step counts in a single day, and my exploratory visualizations use color to differentiate between weekdays and weekends.</p>
+<p>In my exploratory visualization, it is easy to see that the step counts tend to be the same across my two groups based on how the boxplots seemed to take up the same position and breadth along the y-axis. In my affective visualization, it is also possible to see how the step counts don’t really differ between weekdays and weekends by the way the color shifts seem to be random and no particular hue is positioned in any particular part in the visualization.</p>
+<p>During week 9, I received one main piece of feedback, which was to reconsider the colors that I used represent data in my data points. I ultimately decided to incorporate this feedback because I realized that my choice of colors (oranges, yellows, greens, and purples) obstructed the trends of my data more than explaining them. I opted to use only shades of blue to show levels of step count instead of my previous color gradient, and I replaced the purple border with a red aura for a softer, but more easily identified contrast.</p>
 </section>
 <section id="b.-designing-an-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="b.-designing-an-analysis">b. Designing an analysis</h3>
@@ -580,7 +582,7 @@ delta estimate: 0.008163265 (negligible)
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">width =</span> <span class="fl">0.1</span>, <span class="co"># set horizontal jitter</span></span>
 <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span>  <span class="co"># set transparency of points</span></span>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Yes"</span> <span class="ot">=</span> <span class="st">"gold3"</span>, <span class="co"># choose custom colors</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"No"</span> <span class="ot">=</span> <span class="st">"turquoise"</span>)) <span class="sc">+</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"No"</span> <span class="ot">=</span> <span class="st">"turquoise3"</span>)) <span class="sc">+</span></span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Weekday (Yes/No)"</span>, <span class="co"># add labels to x- and y-axes</span></span>
 <span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of steps taken"</span>) <span class="sc">+</span></span>
 <span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"lato"</span>) <span class="sc">+</span> <span class="co"># change theme, change font</span></span>

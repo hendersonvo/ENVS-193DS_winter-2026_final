@@ -251,6 +251,10 @@ My affective visualization differs from my exploratory visualizations that I mad
 
 My two types of visualizations are similar in the way that they use color to differentiate between groups within a variable. For example, my affective visualization uses color to differentiate higher step counts from lower step counts in a single day, and my exploratory visualizations use color to differentiate between weekdays and weekends. 
 
+In my exploratory visualization, it is easy to see that the step counts tend to be the same across my two groups based on how the boxplots seemed to take up the same position and breadth along the y-axis. In my affective visualization, it is also possible to see how the step counts don't really differ between weekdays and weekends by the way the color shifts seem to be random and no particular hue is positioned in any particular part in the visualization. 
+
+During week 9, I received one main piece of feedback, which was to reconsider the colors that I used represent data in my data points. I ultimately decided to incorporate this feedback because I realized that my choice of colors (oranges, yellows, greens, and purples) obstructed the trends of my data more than explaining them. I opted to use only shades of blue to show levels of step count instead of my previous color gradient, and I replaced the purple border with a red aura for a softer, but more easily identified contrast. 
+
 ### b. Designing an analysis
 
 My response variable (step count) is a discrete variable, and my predictor variable (weekday/weekend) is a binary categorical variable. My initial question when collecting this data was: How does the number of steps I take vary between weekdays and weekends? Because we want to identify if there is a difference between two groups, and our response variable is not continuous, it would be appropriate to use a non parametric test that compares the ranks of the data points between the two groups. We have a test that does this: the Wilcoxon rank sum test! We would use this instead of the t-test (the parametric counterpart) because our count data does not follow a normal distribution, breaking one of the assumptions of the t-test. 
@@ -307,7 +311,7 @@ ggplot(data = personal, # use personal data
               width = 0.1, # set horizontal jitter
               alpha = 0.4) +  # set transparency of points
   scale_color_manual(values = c("Yes" = "gold3", # choose custom colors
-                                "No" = "turquoise")) +
+                                "No" = "turquoise3")) +
   labs(x = "Weekday (Yes/No)", # add labels to x- and y-axes
        y = "Number of steps taken") +
   theme_minimal(base_family = "lato") + # change theme, change font
