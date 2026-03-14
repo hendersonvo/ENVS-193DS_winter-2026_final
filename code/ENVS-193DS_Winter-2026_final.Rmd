@@ -221,7 +221,7 @@ ggplot(mopl_clean, # use cleaned mopl data
                      breaks = c(0,1)) +
   labs(x = "Visual obstruction (cm)", # add axis labels
        y = "Probability of nest site occupancy (1 = Yes, 0 = No)") +
-  theme_bw(base_family = "lato") + # change theme, change to custom font
+  theme_classic(base_family = "lato") + # change theme, change to custom font
   theme(panel.grid = element_blank()) # remove gridlines
 ```
 
