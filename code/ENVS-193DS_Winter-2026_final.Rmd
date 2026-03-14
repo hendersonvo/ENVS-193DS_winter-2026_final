@@ -2,11 +2,16 @@
 title: "ENVS 193DS Winter 2026 Final"
 author: Henderson Vo
 date: 2026-03-17
-output: html_document
+format:
+  html:
+    toc: True
+execute:
+  message: false # use this to make sure messages don't show up
+  warning: false # use this to make sure warnings don't show up
 ---
 [GitHub repo](https://github.com/hendersonvo/ENVS-193DS_winter-2026_final)
 
-# Set up
+## Set up
 
 ```{r message=FALSE, warning=FALSE}
 # loading libraries
@@ -25,14 +30,13 @@ library(gtsummary)
 kelp <- read_csv(here("data", "Annual_Kelp_All_Years_20250903.csv"))
 mp_selection <- read_csv(here("data", "MOPL_nest-site_selection_Duchardt_et_al._2019.csv"))
 personal <- read_csv(here("data", "envs193ds-personal-data.csv")) |> 
-  clean_names() |> 
-  mutate(weekday = fct_relevel(as_factor(weekday), "Yes", "No"))
+  clean_names() |> # clean column names
+  mutate(weekday = fct_relevel(as_factor(weekday), "Yes", "No")) # transform weekday into a factor
 
-# load font
-font_add_google("Lato", "lato")
-showtext_auto()
-showtext_opts(dpi = 200)
-theme_set(theme_classic(base_family = "lato"))
+# fonts
+font_add_google("Lato", "lato") # load font "Lato" and save as "lato"
+showtext_auto() # enable show text
+showtext_opts(dpi = 200) # change show text size
 ```
 
 
@@ -41,7 +45,7 @@ theme_set(theme_classic(base_family = "lato"))
 
 ### a. Transparent statistical methods
 
-In part 1, they used a linear regression. In part 2, they used a Kruskal-Wallis test. 
+In part 1, they used a linear regression, which we can determine by considering that they were asking about whether a variable (precipitation) predicts the output of a continuous response variable (flooded wetland area). In part 2, they used a Kruskal-Wallis test, which we can determine by considering that they compared the median wetland areas of more than two groups (wet, above normal, below normal, dry, critical drought) to see if one of the medians differed from the others. 
 
 ### b. Figure needed
 
@@ -82,8 +86,8 @@ kelp_clean <- kelp |> # use kelp data
   
   ungroup() # stop grouping by site_name and year
 
-slice_sample(kelp_clean, n = 5)
-str(kelp_clean)
+slice_sample(kelp_clean, n = 5) # show a sample of 5 random observations
+str(kelp_clean) # view the structure of dataset
 
 ```
 
@@ -95,21 +99,21 @@ Because we are looking at frond observations, we want to exclude observations fr
 ### c. Visualize the data
 
 ```{r}
-ggplot(data = kelp_clean,
-       aes(x = year,
+ggplot(data = kelp_clean, # use clean kelp data
+       aes(x = year, # set x- and y-axes, differentiate by site name
            y = mean_fronds,
            color = site_name)) +
-  geom_line() +
-  geom_point() +
-  labs(x = "Year",
+  geom_line() + # add line plot
+  geom_point() + # add point observations
+  labs(x = "Year", # add labels to x- and y-axes, add title, and change legend title
        y = "Mean kelp frounds per year",
        title = "Sites vary in mean kelp fronds per year",
        color = "Site") +
-  scale_color_manual(values = c("Naples" = "turquoise4",
+  scale_color_manual(values = c("Naples" = "turquoise4", # Change three groups to customs colors
                                 "Isla Vista" = "tan",
                                 "Carpinteria" = "darkgrey")) +
-  theme_minimal(base_family = "lato") +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme_minimal(base_family = "lato") + # change theme, set custom font
+  theme(plot.title = element_text(hjust = 0.5)) # center the title
 ```
 
 
@@ -140,42 +144,42 @@ This predictor variable is continuous, as a distance can take on any value in a 
 |:-------:|:------------------:|:------------------------------:|:-----------------:|
 | 0       |       $\times$     |            $\times$            | Null model        |
 | 1       | $\checkmark$       | $\checkmark$                   | Saturated model   |
-| 2       |  $\times$          | $\checkmark$                   | Edge distance model |
-| 3       | $\checkmark$       | $\times$                       | Visual obstruction model |
+| 2       |  $\times$          | $\checkmark$                   | Edge distance only model |
+| 3       | $\checkmark$       | $\times$                       | Visual obstruction only model |
 
 ### d. Run the models
 
 ```{r}
-mopl_clean <- mp_selection |> 
-  clean_names() |> 
-  mutate(used_bin = case_when(id == "used" ~ 1,
+mopl_clean <- mp_selection |> # use raw mp_selection data
+  clean_names() |> # clean column names, no upper case or spaces
+  mutate(used_bin = case_when(id == "used" ~ 1, # create a binary column, "used" = 1, "available" = 0
                               id == "available" ~ 0)) |> 
-  select(used_bin, edgedist, vo_nest)
+  select(used_bin, edgedist, vo_nest) # select only these columns
 ```
 
 ```{r}
-mopl_model0 <- glm(data = mopl_clean,
-                   used_bin ~ 1,
-                   family = "binomial")
+mopl_model0 <- glm(data = mopl_clean, # create a null glm model using clean mopl data
+                   used_bin ~ 1, # response vs. 1
+                   family = "binomial") # use logistic regression type glm
 
-mopl_model1 <- glm(data = mopl_clean, 
-                   used_bin ~ edgedist + vo_nest,
-                   family = "binomial")
+mopl_model1 <- glm(data = mopl_clean,  # create a saturated glm model using clean mopl data
+                   used_bin ~ edgedist + vo_nest, # response vs. edge distance and visual obstruction
+                   family = "binomial") # use logistic regression type glm
 
-mopl_model2 <- glm(data = mopl_clean,
-                   used_bin ~ edgedist,
-                   family = "binomial")
+mopl_model2 <- glm(data = mopl_clean, # create a glm model using clean mopl data
+                   used_bin ~ edgedist, # response vs. edge distance
+                   family = "binomial") # use logistic regression type glm
 
-mopl_model3 <- glm(data = mopl_clean,
-                   used_bin ~ vo_nest,
-                   family = "binomial")
+mopl_model3 <- glm(data = mopl_clean, # create a glm model using clean mopl data
+                   used_bin ~ vo_nest, # response vs. visual obstruction
+                   family = "binomial") # use logistic regression type glm
 ```
 
 
 ### e. Select the best model
 
 ```{r}
-model.sel(mopl_model0, mopl_model1, mopl_model2, mopl_model3, rank = AIC)
+model.sel(mopl_model0, mopl_model1, mopl_model2, mopl_model3, rank = AIC) # select the best fitting model based on Akaike's Information Criterion (AIC)
 ```
 
 The best model as determed by Akaike's Information Criterion (AIC) is the model using only visual obstruction as a predictor to nest site usage, as it has the lowest AIC compared to the other three models. 
@@ -184,7 +188,7 @@ The best model as determed by Akaike's Information Criterion (AIC) is the model 
 
 ```{r}
 plot(
-  simulateResiduals(mopl_model3)
+  simulateResiduals(mopl_model3) # display the DHARMa diagnostic plots for the simulated residuals
 )
 ```
 
@@ -193,31 +197,31 @@ We can see that our simulated residuals follow a uniform distribution, which we 
 ### g. Visualize the model predictions
 
 ```{r message=FALSE, warning=FALSE}
-mopl_preds <- ggpredict(mopl_model3,
+mopl_preds <- ggpredict(mopl_model3, # generate predicted probabilities 
                         terms = "vo_nest [0:19 by = 1]")
 
-ggplot(mopl_clean,
-       aes(x = vo_nest,
+ggplot(mopl_clean, # use cleaned mopl data
+       aes(x = vo_nest, # set x- and y-axes
            y = used_bin)) +
-  geom_point(size = 3,
+  geom_point(size = 3, # add point observations; edit size, color, and transparency
              color = "brown",
              alpha = 0.25) +
-  geom_ribbon(data = mopl_preds,
+  geom_ribbon(data = mopl_preds, # add a 95% CI around model predictions
               aes(x = x,
                   y = predicted,
                   ymin = conf.low,
                   ymax = conf.high),
-              alpha = 0.3,
-              fill = "forestgreen") +
-  geom_line(data = mopl_preds,
+              alpha = 0.3, # change the transparency of the ribbon
+              fill = "forestgreen") + # change the color of the ribbon
+  geom_line(data = mopl_preds, # add a line for model predictions
             aes(x = x,
                 y = predicted)) +
-  scale_y_continuous(limits = c(0,1),
+  scale_y_continuous(limits = c(0,1), # set limits of y-axis to show full probability range 0 to 1
                      breaks = c(0,1)) +
-  labs(x = "Visual obstruction (cm)",
+  labs(x = "Visual obstruction (cm)", # add axis labels
        y = "Probability of nest site occupancy (1 = Yes, 0 = No)") +
-  theme_bw() +
-  theme(panel.grid = element_blank())
+  theme_bw(base_family = "lato") + # change theme, change to custom font
+  theme(panel.grid = element_blank()) # remove gridlines
 ```
 
 
@@ -228,16 +232,16 @@ ggplot(mopl_clean,
 ### i. Calculate model predictions
 
 ```{r}
-summary(mopl_model3) # show model coefficients
-
-plogis(1.00528) # perform inverse logit transformation on intercept estimate
+# calculate the predicted probability of nest-site occupancy
+ggpredict(mopl_model3, # use our best model based on AICc
+          terms = "vo_nest [0]") #visual obstruction = 0
 ```
 
 The predicted probability of Mountain Plover nest site occupancy at 0 on the index of visual obstruction is 0.73, or 73%. 
 
 ### j. Interpret your results
 
-The predicted probability of Mountain Plover nest site occupancy when there is no visual obstruction (0 on visual obstruction index) is 0.73, or 73%. From our selected model, we can see that there is a negative relationship between visual obstruction and probability of occupancy. That is, as visual obstruction increases, we would expect to observe a lower probability of nest site occupancy by Mountain Plovers. This is because "the short, dense layer [of vegetation] can provide some concealment to a sitting plover's body" (Discussion, paragraph 4) and having sparse taller vegetation can still slightly obstruct the outline of the plover while still allowing the plover to scan for predators (Discussion, paragraph 4). 
+The predicted probability of Mountain Plover nest site occupancy when there is no visual obstruction (0 on visual obstruction index) is 0.73, or 73%. From our selected model, we can see that there is a negative relationship between visual obstruction and probability of occupancy. That is, as visual obstruction increases, we would expect to observe a lower probability of nest site occupancy by Mountain Plovers. From Figure 1, we can see that there is a sharp decrease in probability of site occupancy as we move towards more visual obstruction. Biologically, this is because "the short, dense layer [of vegetation] can provide some concealment to a sitting plover's body" (Discussion, paragraph 4) and having sparse taller vegetation can still slightly obstruct the outline of the plover while still allowing the plover to scan for predators (Discussion, paragraph 4). 
 
 ## Problem 4. Affective and exploratory visulizations
 
@@ -264,12 +268,12 @@ We can also say that our observations are independent, since the number of steps
 Now we will check assumption 4. 
 
 ```{r}
-ggplot(data = personal,
-       aes(x = steps_taken,
-           fill = weekday)) +
-  geom_histogram(bins = 7, color = "black") +
-  facet_wrap(~ weekday) +
-  theme_bw() 
+ggplot(data = personal, # use personal data
+       aes(x = steps_taken, # set x-axis to steps taken
+           fill = weekday)) + # differentiate by weekday status
+  geom_histogram(bins = 7, color = "black") + # create a histogram
+  facet_wrap(~ weekday) + # separate into panels based on weekday status
+  theme_bw(base_family = "lato") # change the theme, change the font
 ```
 
 Although there is a difference in height between the two peaks (which can be attributed to the fact that there are many more weekday observations than weekend observations), we can see that both distributions have a slight right skew. Overall, the shapes of both distributions look relatively the same.
@@ -279,14 +283,14 @@ Now all of our assumptions are checked! Let's run the test.
 #### Running the test
 
 ```{r}
-wilcox.test(
-  steps_taken ~ weekday, 
-  data = personal
+wilcox.test( # run a Wilcoxon rank sum test 
+  steps_taken ~ weekday, # response ~ predictor
+  data = personal # use personal data
 )
 
-cliff.delta(
-  steps_taken ~ weekday,
-  data = personal
+cliff.delta( # calculate Cliff's delta (effect size)
+  steps_taken ~ weekday, # response ~ predictor
+  data = personal # use personal data
 )
 ```
 
@@ -294,21 +298,20 @@ cliff.delta(
 ### d. Create a visualization
 
 ```{r}
-
-ggplot(data = personal,
-       aes(x = weekday,
+ggplot(data = personal, # use personal data 
+       aes(x = weekday, # set s- and y-axes
            y = steps_taken,
-           color = weekday)) +
-  geom_boxplot(width = 0.5) +
-  geom_jitter(height = 0,
-              width = 0.1,
-              alpha = 0.4) +  
-  scale_color_manual(values = c("Yes" = "gold3",
+           color = weekday)) + # differentiate by weekday status
+  geom_boxplot(width = 0.5) + # create a boxplot, set the width
+  geom_jitter(height = 0, # overlay a jitter plot, no height jitter
+              width = 0.1, # set horizontal jitter
+              alpha = 0.4) +  # set transparency of points
+  scale_color_manual(values = c("Yes" = "gold3", # choose custom colors
                                 "No" = "turquoise")) +
-  labs(x = "Weekday (Yes/No)",
+  labs(x = "Weekday (Yes/No)", # add labels to x- and y-axes
        y = "Number of steps taken") +
-  theme_minimal() +
-  theme(legend.position = "none")
+  theme_minimal(base_family = "lato") + # change theme, change font
+  theme(legend.position = "none") # remove the legend
 ```
 
 ### e. Write a caption
