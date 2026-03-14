@@ -5,6 +5,7 @@ date: 2026-03-17
 format:
   html:
     toc: True
+    toc-float: True
 execute:
   message: false # use this to make sure messages don't show up
   warning: false # use this to make sure warnings don't show up
@@ -53,7 +54,7 @@ One figure that could accompany the statement in part 2 is a side-by-side boxplo
 
 ### c. Suggestions for rewriting
 
-We have determined that flooded wetland area in the San Joaquin River Delta is not predicted by precipitation (linear regression, F(df) = test statistic, p = 0.11, $\alpha$ = 0.05). We have also found that median flooded wetland area does not differ across water year classification (wet, above normal, below normal, dry, critical drought) (Kruskal-Wallis test, H = test statistic, p = 0.12, $\alpha$ = 0.05).
+We have determined that flooded wetland area in the San Joaquin River Delta is not predicted by precipitation (linear regression, F(df) = test statistic, p = 0.11, $\alpha$ = 0.05). We have also found that median flooded wetland area does not differ across water year classification (wet, above normal, below normal, dry, critical drought) (Kruskal-Wallis test, H = test statistic, p = 0.12, $\alpha$ = 0.05). Biologically, this means that it is not expected that flooded wetlands in the San Joaquin River Delta grow or shrink in area based on precipitation or based on yearly water classification trends (wet/drought/etc). 
 
 ### d. Interpretation
 
@@ -106,7 +107,7 @@ ggplot(data = kelp_clean, # use clean kelp data
   geom_line() + # add line plot
   geom_point() + # add point observations
   labs(x = "Year", # add labels to x- and y-axes, add title, and change legend title
-       y = "Mean kelp frounds per year",
+       y = "Mean kelp fronds per year",
        title = "Sites vary in mean kelp fronds per year",
        color = "Site") +
   scale_color_manual(values = c("Naples" = "turquoise4", # Change three groups to customs colors
@@ -135,7 +136,7 @@ This predictor variable is continuous, as it comprises measurements of vegetatio
 
 ##### *Distance to prairie dog colony edge*
 
-This predictor variable is continuous, as a distance can take on any value in a range, including fractional units. As distance to the pririe dog colony edge increases, the probability of Mountain Plover nest site occupancy would increase because "Mountain Plovers are especially dependent on black-tailed prairie dogs (Cynomys ludovicianus) to engineer suitable habitat through soil disturbance and vegetation clipping (Dinsmore et al. 2005, Augustine and Derner 2012, Duchardt et al. 2018)," (Introduction, paragraph 3).
+This predictor variable is continuous, as a distance can take on any value in a range, including fractional units. As distance to the prairie dog colony edge increases, the probability of Mountain Plover nest site occupancy would decrease because "Mountain Plovers are especially dependent on black-tailed prairie dogs (Cynomys ludovicianus) to engineer suitable habitat through soil disturbance and vegetation clipping (Dinsmore et al. 2005, Augustine and Derner 2012, Duchardt et al. 2018)," (Introduction, paragraph 3) and would therefore prefer being closer to praire dog colonies.
 
 ### c. Table of models
 
@@ -227,7 +228,7 @@ ggplot(mopl_clean, # use cleaned mopl data
 
 ### h. Write a caption for your figure
 
-**Figure 1. Mountain plovers tend to select sites with lower visual obstruction.** The x-axis represents the level of visual obstruction at a site in cm. The y-axis is a scale of probability from 0 to 1. The points represent individual observations of site selection. The black line represents the model prediction of site selection probability. The green ribbon represents a 95% confidence interval for the model predictions. 
+**Figure 1. Mountain plovers tend to select sites with lower visual obstruction.** The x-axis represents the level of visual obstruction at a site in cm. The y-axis is a scale of probability from 0 to 1. The points represent individual observations of site selection. The black line represents the model prediction of site selection probability. The green ribbon represents a 95% confidence interval for the model predictions. This data comes from Duchardt, Courtney; Beck, Jeffrey; Augustine, David (2020). Data from: Mountain Plover habitat selection and nest survival in relation to weather variability and spatial attributes of Black-tailed Prairie Dog disturbance [Dataset]. Dryad. https://doi.org/10.5061/dryad.ttdz08kt7.
 
 ### i. Calculate model predictions
 
@@ -241,7 +242,7 @@ The predicted probability of Mountain Plover nest site occupancy at 0 on the ind
 
 ### j. Interpret your results
 
-The predicted probability of Mountain Plover nest site occupancy when there is no visual obstruction (0 on visual obstruction index) is 0.73, or 73%. From our selected model, we can see that there is a negative relationship between visual obstruction and probability of occupancy. That is, as visual obstruction increases, we would expect to observe a lower probability of nest site occupancy by Mountain Plovers. From Figure 1, we can see that there is a sharp decrease in probability of site occupancy as we move towards more visual obstruction. Biologically, this is because "the short, dense layer [of vegetation] can provide some concealment to a sitting plover's body" (Discussion, paragraph 4) and having sparse taller vegetation can still slightly obstruct the outline of the plover while still allowing the plover to scan for predators (Discussion, paragraph 4). 
+The predicted probability of Mountain Plover nest site occupancy when there is no visual obstruction (0 on visual obstruction index) is 0.73, or 73%. From our selected model, we can see that there is a negative relationship between visual obstruction and probability of occupancy. That is, as visual obstruction increases, we would expect to observe a lower probability of nest site occupancy by Mountain Plovers. From Figure 1, we can see that there is a sharp decrease in probability of site occupancy as we move towards more visual obstruction. Biologically, this is because plovers benefit from shorter dense grasses that can conceal their presence and also having sparse (not dense) taller vegetation can still slightly obstruct the outline of the plover while still allowing the plover to scan for predators (Discussion, paragraph 4). 
 
 ## Problem 4. Affective and exploratory visulizations
 

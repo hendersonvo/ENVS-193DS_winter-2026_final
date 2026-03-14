@@ -228,7 +228,7 @@ window.Quarto = {
 </section>
 <section id="c.-suggestions-for-rewriting" class="level3">
 <h3 class="anchored" data-anchor-id="c.-suggestions-for-rewriting">c.&nbsp;Suggestions for rewriting</h3>
-<p>We have determined that flooded wetland area in the San Joaquin River Delta is not predicted by precipitation (linear regression, F(df) = test statistic, p = 0.11, <span class="math inline">\(\alpha\)</span> = 0.05). We have also found that median flooded wetland area does not differ across water year classification (wet, above normal, below normal, dry, critical drought) (Kruskal-Wallis test, H = test statistic, p = 0.12, <span class="math inline">\(\alpha\)</span> = 0.05).</p>
+<p>We have determined that flooded wetland area in the San Joaquin River Delta is not predicted by precipitation (linear regression, F(df) = test statistic, p = 0.11, <span class="math inline">\(\alpha\)</span> = 0.05). We have also found that median flooded wetland area does not differ across water year classification (wet, above normal, below normal, dry, critical drought) (Kruskal-Wallis test, H = test statistic, p = 0.12, <span class="math inline">\(\alpha\)</span> = 0.05). Biologically, this means that it is not expected that flooded wetlands in the San Joaquin River Delta grow or shrink in area based on precipitation or based on yearly water classification trends (wet/drought/etc).</p>
 </section>
 <section id="d.-interpretation" class="level3">
 <h3 class="anchored" data-anchor-id="d.-interpretation">d.&nbsp;Interpretation</h3>
@@ -266,11 +266,11 @@ window.Quarto = {
 <pre><code># A tibble: 5 × 3
   site_name    year mean_fronds
   &lt;fct&gt;       &lt;dbl&gt;       &lt;dbl&gt;
-1 Naples       2024       17.5 
-2 Carpinteria  2011        8.75
-3 Naples       2020        7.41
-4 Isla Vista   2010        4.78
-5 Naples       2013        9.20</code></pre>
+1 Naples       2020        7.41
+2 Naples       2009        5.44
+3 Naples       2018       17.7 
+4 Isla Vista   2008       39.4 
+5 Carpinteria  2004        3.67</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(kelp_clean) <span class="co"># view the structure of dataset</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -295,7 +295,7 @@ window.Quarto = {
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="co"># add line plot</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="co"># add point observations</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, <span class="co"># add labels to x- and y-axes, add title, and change legend title</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Mean kelp frounds per year"</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Mean kelp fronds per year"</span>,</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Sites vary in mean kelp fronds per year"</span>,</span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Site"</span>) <span class="sc">+</span></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Naples"</span> <span class="ot">=</span> <span class="st">"turquoise4"</span>, <span class="co"># Change three groups to customs colors</span></span>
@@ -331,7 +331,7 @@ window.Quarto = {
 </section>
 <section id="distance-to-prairie-dog-colony-edge" class="level5">
 <h5 class="anchored" data-anchor-id="distance-to-prairie-dog-colony-edge"><em>Distance to prairie dog colony edge</em></h5>
-<p>This predictor variable is continuous, as a distance can take on any value in a range, including fractional units. As distance to the pririe dog colony edge increases, the probability of Mountain Plover nest site occupancy would increase because “Mountain Plovers are especially dependent on black-tailed prairie dogs (Cynomys ludovicianus) to engineer suitable habitat through soil disturbance and vegetation clipping (Dinsmore et al.&nbsp;2005, Augustine and Derner 2012, Duchardt et al.&nbsp;2018),” (Introduction, paragraph 3).</p>
+<p>This predictor variable is continuous, as a distance can take on any value in a range, including fractional units. As distance to the prairie dog colony edge increases, the probability of Mountain Plover nest site occupancy would decrease because “Mountain Plovers are especially dependent on black-tailed prairie dogs (Cynomys ludovicianus) to engineer suitable habitat through soil disturbance and vegetation clipping (Dinsmore et al.&nbsp;2005, Augustine and Derner 2012, Duchardt et al.&nbsp;2018),” (Introduction, paragraph 3) and would therefore prefer being closer to praire dog colonies.</p>
 </section>
 </section>
 <section id="c.-table-of-models" class="level3">
@@ -477,7 +477,7 @@ Models ranked by AIC(x) </code></pre>
 </section>
 <section id="h.-write-a-caption-for-your-figure" class="level3">
 <h3 class="anchored" data-anchor-id="h.-write-a-caption-for-your-figure">h. Write a caption for your figure</h3>
-<p><strong>Figure 1. Mountain plovers tend to select sites with lower visual obstruction.</strong> The x-axis represents the level of visual obstruction at a site in cm. The y-axis is a scale of probability from 0 to 1. The points represent individual observations of site selection. The black line represents the model prediction of site selection probability. The green ribbon represents a 95% confidence interval for the model predictions.</p>
+<p><strong>Figure 1. Mountain plovers tend to select sites with lower visual obstruction.</strong> The x-axis represents the level of visual obstruction at a site in cm. The y-axis is a scale of probability from 0 to 1. The points represent individual observations of site selection. The black line represents the model prediction of site selection probability. The green ribbon represents a 95% confidence interval for the model predictions. This data comes from Duchardt, Courtney; Beck, Jeffrey; Augustine, David (2020). Data from: Mountain Plover habitat selection and nest survival in relation to weather variability and spatial attributes of Black-tailed Prairie Dog disturbance [Dataset]. Dryad. https://doi.org/10.5061/dryad.ttdz08kt7.</p>
 </section>
 <section id="i.-calculate-model-predictions" class="level3">
 <h3 class="anchored" data-anchor-id="i.-calculate-model-predictions">i. Calculate model predictions</h3>
@@ -497,7 +497,7 @@ vo_nest | Predicted |     95% CI
 </section>
 <section id="j.-interpret-your-results" class="level3">
 <h3 class="anchored" data-anchor-id="j.-interpret-your-results">j. Interpret your results</h3>
-<p>The predicted probability of Mountain Plover nest site occupancy when there is no visual obstruction (0 on visual obstruction index) is 0.73, or 73%. From our selected model, we can see that there is a negative relationship between visual obstruction and probability of occupancy. That is, as visual obstruction increases, we would expect to observe a lower probability of nest site occupancy by Mountain Plovers. From Figure 1, we can see that there is a sharp decrease in probability of site occupancy as we move towards more visual obstruction. Biologically, this is because “the short, dense layer [of vegetation] can provide some concealment to a sitting plover’s body” (Discussion, paragraph 4) and having sparse taller vegetation can still slightly obstruct the outline of the plover while still allowing the plover to scan for predators (Discussion, paragraph 4).</p>
+<p>The predicted probability of Mountain Plover nest site occupancy when there is no visual obstruction (0 on visual obstruction index) is 0.73, or 73%. From our selected model, we can see that there is a negative relationship between visual obstruction and probability of occupancy. That is, as visual obstruction increases, we would expect to observe a lower probability of nest site occupancy by Mountain Plovers. From Figure 1, we can see that there is a sharp decrease in probability of site occupancy as we move towards more visual obstruction. Biologically, this is because plovers benefit from shorter dense grasses that can conceal their presence and also having sparse (not dense) taller vegetation can still slightly obstruct the outline of the plover while still allowing the plover to scan for predators (Discussion, paragraph 4).</p>
 </section>
 </section>
 <section id="problem-4.-affective-and-exploratory-visulizations" class="level2">
